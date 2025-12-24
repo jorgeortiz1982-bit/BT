@@ -5,6 +5,14 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-button (click)="scanAndConnect()">Conectar Arduino</ion-button>
-  <p>Temperatura: {{ temperatura }}</p>
+  <ion-button color="primary" (click)="scanAndConnect()" *ngIf="!conectado">
+    Conectar Arduino
+  </ion-button>
+
+  <ion-button color="danger" (click)="desconectar()" *ngIf="conectado">
+    Desconectar
+  </ion-button>
+
+  <p *ngIf="temperatura !== null">Temperatura: {{ temperatura }} °C</p>
+  <p *ngIf="!temperatura && conectado">Leyendo temperatura...</p>
 </ion-content>
