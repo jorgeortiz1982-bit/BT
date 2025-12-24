@@ -1,47 +1,23 @@
 import { Component } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { BluetoothLe } from '@capacitor-community/bluetooth-le';
 
 @Component({
   selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
-  standalone: true,
-  imports: [
-    IonicModule,
-    CommonModule,
-    FormsModule
-  ]
+  templateUrl: './home.page.html',
+  styleUrls: ['./home.page.scss'],
+  standalone: true,         // <--- Muy importante
+  imports: [IonicModule, CommonModule] // <--- Para que ion-button, ion-content, etc. funcionen
 })
 export class HomePage {
-
-  temperatura: string = '';
+  temperatura: number | null = null;
 
   constructor() {}
 
-  async scanAndConnect() {
-    await BluetoothLe.initialize();
-
-    const device = await BluetoothLe.requestDevice({
-      namePrefix: 'HM-10'
-    });
-
-    if (!device) return;
-
-    const deviceId = device.deviceId;
-
-    await BluetoothLe.connect({ deviceId });
-
-    await BluetoothLe.startNotifications({
-      deviceId,
-      service: 'FFE0',
-      characteristic: 'FFE1'
-    }).then((result: any) => {
-      const data = new TextDecoder().decode(result.value);
-      this.temperatura = data;
-      console.log('Temperatura:', data);
-    });
+  scanAndConnect() {
+    // Aquí iría la lógica para conectar con Arduino vía Bluetooth
+    console.log('Conectar Arduino');
+    // Simulación de temperatura:
+    this.temperatura = Math.floor(Math.random() * 40); // valor de prueba
   }
 }
