@@ -1,42 +1,39 @@
 import { Component } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
-import { CommonModule } from '@angular/common';
+import { BluetoothLe } from '@capacitor-community/bluetooth-le';
 
 @Component({
   selector: 'app-home',
+  standalone: true,
+  imports: [IonicModule],
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
-  standalone: true,
-  imports: [IonicModule, CommonModule]
 })
 export class HomePage {
-  temperatura: number | null = null;
-  conectado: boolean = false;
+  temperatura: string = '...';
 
   constructor() {}
 
-  // Simula la conexión al Arduino
-  scanAndConnect() {
-    this.conectado = true;
-    console.log('Conectado al Arduino (simulado)');
+  async scanAndConnect() {
+    try {
+      // Inicializa Bluetooth
+      await BluetoothLe.initialize();
 
-    // Simula lectura de temperatura cada 2 segundos
-    setInterval(() => {
-      if (this.conectado) {
-        this.temperatura = this.simularTemperatura();
-      }
-    }, 2000);
-  }
+      // Escanea por dispositivos BLE
+      const result = await BluetoothLe.requestDevice({
+        services: [],  // deja vacío para que aparezca tu dispositivo
+        optionalServices: []
+      });
 
-  // Función que simula temperatura de Arduino
-  simularTemperatura(): number {
-    return parseFloat((20 + Math.random() * 10).toFixed(2)); // 20°C a 30°C
-  }
+      console.log('Dispositivo conectado:', result.name);
 
-  // Desconectar (opcional)
-  desconectar() {
-    this.conectado = false;
-    this.temperatura = null;
-    console.log('Arduino desconectado');
+      // Aquí conectarías a tu servicio y característica BLE para leer la temperatura
+      // Ejemplo:
+      // const data = await BluetoothLe.read({ deviceId: result.deviceId, service: 'xxxx', characteristic: 'xxxx' });
+      // this.temperatura = new TextDecoder().decode(data.value);
+
+    } catch (err) {
+      console.error('Error Bluetooth:', err);
+    }
   }
 }
